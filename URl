@@ -1,4 +1,76 @@
-http://127.0.0.1:8080/docs#/Client%20User/signup_client_signup_post
+Steps:
 
-For postman access :
-http://127.0.0.1:8080/client/signup
+## 1. Start Your FastAPI Server
+Make sure your FastAPI server is running.  
+If you use Uvicorn, the command is usually:
+```bash
+uvicorn app.main:app --reload --host 127.0.0.1 --port 8080
+```
+---
+## 2. Test `/client/signup/test` Endpoint
+**Purpose:** This endpoint creates a random test user and returns the credentials and verification URL.
+- **Method:** POST
+- **URL:** `http://127.0.0.1:8080/client/signup/test`
+- **Body:** None (leave empty)
+**In Postman:**
+- Set method to `POST`
+- Enter the URL: `http://127.0.0.1:8080/client/signup/test`
+- Select "Body" tab, choose "none"
+- Click "Send"
+- You should get a JSON response with `email`, `password`, and `verification_url`
+---
+## 3. Test `/client/signup` Endpoint
+**Purpose:** Register a new user with your own email and password.
+- **Method:** POST
+- **URL:** `http://127.0.0.1:8080/client/signup`
+- **Body:** Use `x-www-form-urlencoded`
+    - Key: `email`   Value: (your email)
+    - Key: `password` Value: (your password)
+**In Postman:**
+- Set method to `POST`
+- Enter the URL: `http://127.0.0.1:8080/client/signup`
+- Go to "Body" tab
+- Select "x-www-form-urlencoded"
+- Add two keys:  
+    - `email` (e.g., `test@example.com`)  
+    - `password` (e.g., `mysecret123`)
+- Click "Send"
+- You should get a JSON response with a `verification_url`
+---
+## 4. Verify the User
+- Copy the `verification_url` from the previous response.
+- Paste it into your browser or use Postman with a `GET` request.
+- Example:  
+  `http://127.0.0.1:8080/client/email-verify?token=...`
+- You should get a JSON response: `{"message": "Email verified"}`
+---
+## 5. Log In
+- **Method:** POST
+- **URL:** `http://127.0.0.1:8080/client/login`
+- **Body:** Use `x-www-form-urlencoded`
+    - Key: `email`   Value: (your email)
+    - Key: `password` Value: (your password)
+**In Postman:**
+- Set method to `POST`
+- Enter the URL: `http://127.0.0.1:8080/client/login`
+- Go to "Body" tab
+- Select "x-www-form-urlencoded"
+- Add your `email` and `password`
+- Click "Send"
+- You should get a JSON response with an `access_token`
+---
+## Troubleshooting
+- If you get a 404 error, check the URL and method.
+- If you get a 500 error, check your server logs for details.
+- If you get a 400 error about duplicate email, use a new email.
+---
+**Summary Table**
+
+| Endpoint                        | Method | URL                                         | Body Type           | Body Keys         |
+|----------------------------------|--------|----------------------------------------------|---------------------|-------------------|
+| /client/signup/test              | POST   | http://127.0.0.1:8080/client/signup/test     | none                | -                 |
+| /client/signup                   | POST   | http://127.0.0.1:8080/client/signup          | x-www-form-urlencoded | email, password   |
+| /client/email-verify?token=...   | GET    | (from verification_url)                      | none                | -                 |
+| /client/login                    | POST   | http://127.0.0.1:8080/client/login           | x-www-form-urlencoded | email, password   |
+---
+Follow these steps in order and you will be able to register, verify, and log in a user using Postman and your FastAPI backend. If you encounter any errors, check your server logs for more information.
